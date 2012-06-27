@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
-import com.coalmine.connector.logging.CoalmineHandler;
+import com.coalmine.connector.logging.GaeCoalmineHandler;
 
 /**
  * A CoalmineFilter which automatically collects the environment and version from
@@ -45,7 +45,7 @@ public class GaeCoalmineFilter extends CoalmineFilter {
 		// By default we always do this, but allow the client to disable with a config param
 		if (!"false".equals(config.getInitParameter("jul-handler"))) {
 			_log = Logger.getLogger("");
-			_log.addHandler(new CoalmineHandler(connector));
+			_log.addHandler(new GaeCoalmineHandler(connector));
 		}
 	}
 }

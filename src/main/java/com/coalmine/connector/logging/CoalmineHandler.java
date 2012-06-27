@@ -4,6 +4,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.coalmine.Coalmine;
 import com.coalmine.connector.Connector;
 import com.coalmine.connector.SimpleConnector;
@@ -13,17 +16,13 @@ import com.coalmine.connector.notification.Severity;
 /**
  * A java.util.logging Handler to send log messages to Coalmine. By default,
  * only WARNING and higher are sent. Use setLevel() to change the minimum level.
- * 
- * A note about the implementation: We manually manage the minimum level because
- * this raises a security exception on Google App Engine.
  */
 public class CoalmineHandler extends Handler {
 
 	/** The entity responsible for sending notifications to Coalmine. */
 	protected Connector connector;
 	
-	/** The minimum acceptable level to send to Coalmine. */
-	protected Level level;
+	private static final Logger LOG = LoggerFactory.getLogger(CoalmineHandler.class);
 	
 	/**
 	 * Construct a handler with a Connector. Default level to WARNING and above.
@@ -34,7 +33,11 @@ public class CoalmineHandler extends Handler {
 		this.connector = connector;
 		
 		// Default to only accepting WARNING or above.
-		this.level = Level.WARNING;
+		try {
+			setLevel(Level.WARNING);
+		} catch (SecurityException e) {
+			LOG.error("Unable to set severity level", e);
+		}
 	}
 	
 	/**
@@ -54,22 +57,6 @@ public class CoalmineHandler extends Handler {
 		this(new SimpleConnector(Coalmine.getSignature()));
 		connector.setApplicationEnvironment(Coalmine.getEnvironment());
 		connector.setVersion(Coalmine.getVersion());
-	}
-	
-	/**
-	 * We override to avoid security conflicts on Google App Engine.
-	 */
-	@Override
-	public void setLevel(Level level) {
-		this.level = level;
-	}
-	
-	/**
-	 * We override to avoid security conflicts on Google App Engine.
-	 */
-	@Override
-	public Level getLevel() {
-		return level;
 	}
 
 	@Override

@@ -2,6 +2,9 @@ package com.coalmine.connector;
 
 import com.coalmine.connector.notification.Notification;
 
+/**
+ * Responsible for sending notifications to the Coalmine service.
+ */
 public abstract class Connector {
 
 	static final String DEFAULT_API_URL = "https://coalmineapp.com/notify";

@@ -13,51 +13,77 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * An application notification.
+ */
 public class LoggedNotification extends Notification {
 	
+	/** The application environment. E.g., production or staging */
 	@SerializedName("app_environment")
 	protected String applicationEnvironment;
 	
+	/** Free text message */
 	protected String message;
 	
+	/** Stack trace as a String. */
 	@SerializedName("stack_trace")
 	protected String stackTrace;
 	
+	/** Thread that triggered the notification. */
 	@SerializedName("thread_id")
 	protected long threadId;
 
+	/** Name of the machine that triggered the notification. */
 	protected String hostname;
 	
 	/** Name of the class where the error occurred. */
 	@SerializedName("class")
 	protected String className;
 	
+	/** Severity of this notification. */
 	protected Severity severity = Severity.ERROR;
 	
+	/** A map of server variables. */
 	protected Map<String, String> server;
 	
+	/** A map of environment variables. Env is reserved for application state rather than system properties. */
 	protected Map<String, String> environment;
 	
+	/** File that generated the notification. */
 	protected String file;
 	
+	/** The line number of the notification. */
 	@SerializedName("line_number")
 	protected int lineNumber;
 	
+	/** The method that generated the notification. */
 	protected String method;
 	
+	/** Any HTTP parameters that existed when the notification was triggered. */
 	protected String parameters;
 	
+	/** Remote IP address (for web apps). */
 	protected String ipAddress;
 	
+	/** Referring resource (for web apps). */
 	protected String referrer;
 	
+	/** The user agent of the visitor (for web apps). */
 	@SerializedName("user_agent")
 	protected String userAgent;
 	
+	/** URL of the resource that triggered the notification (for web apps). */
 	protected String url;
 	
+	/** Responsible for converting self to JSON */
 	protected transient Gson gson;
-		
+	
+	/**
+	 * Construct a Notification from an exception and the GSON implementation.
+	 * 
+	 * @param ex The exception that was thrown
+	 * @param gson A custom GSON instantiation
+	 */
 	public LoggedNotification(Throwable ex, Gson gson) {
 		this(gson);
 		
@@ -84,10 +110,20 @@ public class LoggedNotification extends Notification {
 		}
 	}
 	
+	/**
+	 * Construct a Notification with a thrown exception.
+	 * 
+	 * @param ex The thrown exception
+	 */
 	public LoggedNotification(Throwable ex) {
 		this(ex, new Gson());
 	}
 	
+	/**
+	 * Construct an empty Notification with a custom instantiation of GSON.
+	 * 
+	 * @param gson A custom instantiation of GSON.
+	 */
 	public LoggedNotification(Gson gson) {
 		this.gson = gson;
 		
@@ -100,10 +136,11 @@ public class LoggedNotification extends Notification {
 		}
 		
 		captureServer();
-		
-		// TODO: Capture the process ID
 	}
 	
+	/**
+	 * Construct an empty Notification.
+	 */
 	public LoggedNotification() {
 		this(new Gson()); 
 	}
@@ -120,22 +157,41 @@ public class LoggedNotification extends Notification {
 		this.applicationEnvironment = applicationEnvironment;
 	}
 	
+	/**
+	 * Set the notification's message.
+	 * 
+	 * @param message The message to set
+	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
 	
+	/**
+	 * @param method The name of the method that triggered the notification
+	 */
 	public void setMethodName(String method) {
 		this.method = method;
 	}
 	
+	/**
+	 * @param className The name of the class that triggered the notification.
+	 */
 	public void setClassName(String className) {
 		this.className = className;
 	}
 	
+	/**
+	 * @param severity The severity of the notification
+	 */
 	public void setSeverity(Severity severity) {
 		this.severity = severity;
 	}
 
+	/**
+	 * Set the HTTP request object. This is only used by web apps.
+	 * 
+	 * @param request The current HTTP request
+	 */
 	@SuppressWarnings("unchecked")
 	public void setRequest(ServletRequest request) {
 		

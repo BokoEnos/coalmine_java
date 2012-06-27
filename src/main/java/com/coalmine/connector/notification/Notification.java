@@ -3,7 +3,9 @@ package com.coalmine.connector.notification;
 import java.util.Map;
 
 /**
- * Base Notification for sending information to Coalmine. 
+ * Base Notification for sending information to Coalmine. Notifications come in
+ * two major forms: LoggedNotification (application event notifications) and
+ * Version notifications (e.g., my app was just deployed).
  */
 public abstract class Notification {
 
