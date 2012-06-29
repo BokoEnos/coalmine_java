@@ -1,5 +1,8 @@
 package com.coalmine.connector;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.coalmine.connector.notification.Notification;
 
 /**
@@ -17,17 +20,31 @@ public abstract class Connector {
 	
 	protected String signature;
 	
-	protected String applicationEnvironment = "Development";
+	protected String applicationEnvironment = "Production";
 	
 	protected String version = "1.0.0";
+	
+	protected Set<String> enabledEnvironments;
 	
 	public Connector(String signature) {
 		this.signature = signature;
 		setUrl(DEFAULT_API_URL);
 		setTimeout(DEFAULT_TIMEOUT);
+		
+		enabledEnvironments = new HashSet<String>();
+		enabledEnvironments.add("production");
+		enabledEnvironments.add("staging");
 	}
 	
 	public abstract boolean send(Notification notification);
+	
+	public void addEnabledEnvironment(String env) {
+		if (env == null || env.isEmpty()) {
+			throw new IllegalArgumentException("Invalid environment");
+		}
+		
+		enabledEnvironments.add(env.toLowerCase());
+	}
 	
 	public void setUrl(String url) {
 		this.url = url;
@@ -47,5 +64,9 @@ public abstract class Connector {
 	
 	public void setVersion(String version) {
 		this.version = version;
+	}
+	
+	protected boolean isSendable(Notification notification) {
+		return enabledEnvironments.contains(applicationEnvironment.toLowerCase());
 	}
 }

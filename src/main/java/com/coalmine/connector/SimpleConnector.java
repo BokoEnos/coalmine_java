@@ -27,6 +27,12 @@ public class SimpleConnector extends Connector {
 	@Override
 	public boolean send(Notification notification) {
 		
+		if (!isSendable(notification)) {
+			LOG.warn(
+				String.format("Coalmine notifications are disabled for the current environment (%s). Enable this environment via connector.addEnabledEnvironment(\"%s\");"), applicationEnvironment, applicationEnvironment);
+			return false;
+		}
+		
 		try {
 			return _send(notification);
 		} catch (RuntimeException e) {
