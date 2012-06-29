@@ -78,3 +78,13 @@ Coalmine comes ready to use on GAE for Java. Simply add the below to your web.xm
     	<filter-name>coalmine</filter-name>
     	<url-pattern>/*</url-pattern>
     </filter-mapping>
+
+## Configuration for Loggers
+
+Coalmine can be configured to listen to your existing logging framework and automatically send notifications based on log messages.
+
+### java.util.logging
+
+In `logging.properties` add the Coalmine Handler. This line is comma separated, so you may add additional loggers such as `java.util.logging.ConsoleHandler`
+
+    handlers = com.coalmine.connector.logging.CoalmineHandler
