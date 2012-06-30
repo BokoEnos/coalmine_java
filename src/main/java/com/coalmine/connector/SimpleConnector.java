@@ -29,7 +29,8 @@ public class SimpleConnector extends Connector {
 		
 		if (!isSendable(notification)) {
 			LOG.warn(
-				String.format("Coalmine notifications are disabled for the current environment (%s). Enable this environment via connector.addEnabledEnvironment(\"%s\");"), applicationEnvironment, applicationEnvironment);
+				String.format("Coalmine notifications are disabled for the current environment (%s). Enable this environment via connector.addEnabledEnvironment(\"%s\");", 
+						applicationEnvironment, applicationEnvironment));
 			return false;
 		}
 		
