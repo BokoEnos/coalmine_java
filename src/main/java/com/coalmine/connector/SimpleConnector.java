@@ -14,6 +14,14 @@ import org.slf4j.LoggerFactory;
 
 import com.coalmine.connector.notification.Notification;
 
+/**
+ * The simplest implementation of a Coalmine Connector. This is the class 
+ * responsible for sending messages to the Coalmine API.
+ * 
+ * This connector honors rate throttling on the client side so that when a 
+ * throttle event occurs, the client (this connector) will not send another 
+ * message for the throttle period (value of Retry-After response header).
+ */
 public class SimpleConnector extends Connector {
 	
 	/** The system time that we were last throttled. */
@@ -25,8 +33,10 @@ public class SimpleConnector extends Connector {
 	 */
 	private int throttleTimeout;
 	
+	/** Content type of the HTTP request. */
 	private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
 	
+	/** Class level logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(SimpleConnector.class);
 
 	/**
@@ -147,15 +157,35 @@ public class SimpleConnector extends Connector {
 		return false;
 	}
 	
+	/**
+	 * Set the temporary timeout, but take a string as a param. Convenience for
+	 * accepting values directly from response headers.
+	 * 
+	 * @param strTimeoutSeconds
+	 */
 	protected void setTemporaryTimeout(String strTimeoutSeconds) {
-		lastThrottled = System.currentTimeMillis();
+		if (strTimeoutSeconds == null || strTimeoutSeconds.isEmpty()) {
+			setTemporaryTimeout(DEFAULT_THROTTLE_TIMEOUT);
+			return;
+		}
 		
 		try {
-			throttleTimeout = Integer.parseInt(strTimeoutSeconds);
+			setTemporaryTimeout(Integer.parseInt(strTimeoutSeconds));
 		} catch (NumberFormatException e) {
 			LOG.warn("Unable to parse retry-after header value ({}) from throttled Coalmine response", strTimeoutSeconds);
-			throttleTimeout = DEFAULT_THROTTLE_TIMEOUT;
+			setTemporaryTimeout(DEFAULT_THROTTLE_TIMEOUT);
 		}
+	}
+	
+	/**
+	 * Set the number of seconds to wait before sending another message to 
+	 * Coalmine.
+	 * 
+	 * @param strTimeoutSeconds The number of seconds to wait
+	 */
+	protected void setTemporaryTimeout(int timeout) {
+		lastThrottled = System.currentTimeMillis();
+		throttleTimeout = timeout;
 	}
 	
 	private void logThrottled() {
