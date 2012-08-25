@@ -83,6 +83,7 @@ public class CoalmineHandler extends Handler {
 		notification.setMessage(record.getMessage());
 		notification.setMethodName(record.getSourceMethodName());
 		notification.setClassName(record.getSourceClassName());
+		notification.setThreadId(record.getThreadID());
 		connector.send(notification);
 	}
 	

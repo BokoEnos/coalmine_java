@@ -90,6 +90,12 @@ public class LoggedNotification extends Notification {
 		severity = Severity.ERROR;
 		
 		if (ex != null) {
+			
+			// Unwrap the exception and find the root cause.
+			while (ex.getCause() != null) {
+				ex = ex.getCause();
+			}
+			
 			message  = String.format("[%s] %s", ex.getClass().getSimpleName(), ex.getLocalizedMessage());
 					
 			StackTraceElement[] lines = ex.getStackTrace();
@@ -250,5 +256,9 @@ public class LoggedNotification extends Notification {
 		for (Object property : properties.keySet()) {
 			server.put(property.toString(), properties.getProperty(property.toString()));
 		}
+	}
+
+	public void setThreadId(long threadId) {
+		this.threadId = threadId;
 	}
 }

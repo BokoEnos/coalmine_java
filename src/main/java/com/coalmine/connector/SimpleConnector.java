@@ -16,9 +16,15 @@ import com.coalmine.connector.notification.Notification;
 
 public class SimpleConnector extends Connector {
 	
+	/** The system time that we were last throttled. */
+	private Long lastThrottled;
+	
 	private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SimpleConnector.class);
+	
+	/** If we were throttled in the past THROTTLE_DELAY millis, dont try to send a notification. */
+	private static final int THROTTLE_DELAY = 5000;
 	
 	public SimpleConnector(String signature) {
 		super(signature);
@@ -42,7 +48,27 @@ public class SimpleConnector extends Connector {
 		}
 	}
 	
+	protected boolean isThrottled() {
+		if (lastThrottled == null) {
+			return false;
+		}
+		
+		long diff = System.currentTimeMillis() - lastThrottled;
+		if (diff > THROTTLE_DELAY) {
+			lastThrottled = null;
+			return false;
+		}
+		
+		return true;
+	}
+	
 	private boolean _send(Notification notification) {
+		
+		if (isThrottled()) {
+			logThrottled();
+			return false;
+		}
+		
 		notification.setApplicationEnvironment(applicationEnvironment);
 		notification.setVersion(version);
 		
@@ -80,6 +106,10 @@ public class SimpleConnector extends Connector {
 			if (conn.getResponseCode() == 200) {
 				LOG.info("Successfully posted notification to Coalmine");
 				return true;
+			} else if (conn.getResponseCode() == 429) {
+				logThrottled();
+				lastThrottled = System.currentTimeMillis();
+				return false;
 			}
 			
 			LOG.warn("Unable to communicate with the Coalmine server.");
@@ -103,5 +133,9 @@ public class SimpleConnector extends Connector {
 		}
 		
 		return false;
+	}
+	
+	private void logThrottled() {
+		LOG.warn("Application is being throttled by Coalmine. Notification will not be sent.");
 	}
 }
