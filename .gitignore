@@ -10,4 +10,5 @@
 
 target/
 release.properties
+*.releaseBackup
 
