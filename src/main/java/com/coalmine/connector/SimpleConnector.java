@@ -19,12 +19,24 @@ public class SimpleConnector extends Connector {
 	/** The system time that we were last throttled. */
 	private Long lastThrottled;
 	
+	/**
+	 * The number of seconds to wait (from lastThrottled) before sending another
+	 * message to Coalmine. 
+	 */
+	private int throttleTimeout;
+	
 	private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SimpleConnector.class);
-	
-	/** If we were throttled in the past THROTTLE_DELAY millis, dont try to send a notification. */
-	private static final int THROTTLE_DELAY = 5000;
+
+	/**
+	 * The default number of seconds we will wait, if throttled, before 
+	 * sending another. It is expected that a throttle response will include
+	 * a Retry-After header with the number of seconds to wait before sending
+	 * another message. If this is not set, or cannot be parsed, this value will
+	 * be used.
+	 */
+	private static final int DEFAULT_THROTTLE_TIMEOUT = 60;
 	
 	public SimpleConnector(String signature) {
 		super(signature);
@@ -54,7 +66,7 @@ public class SimpleConnector extends Connector {
 		}
 		
 		long diff = System.currentTimeMillis() - lastThrottled;
-		if (diff > THROTTLE_DELAY) {
+		if (diff > throttleTimeout) {
 			lastThrottled = null;
 			return false;
 		}
@@ -107,8 +119,8 @@ public class SimpleConnector extends Connector {
 				LOG.info("Successfully posted notification to Coalmine");
 				return true;
 			} else if (conn.getResponseCode() == 429) {
-				logThrottled();
-				lastThrottled = System.currentTimeMillis();
+				logThrottled();				
+				setTemporaryTimeout(conn.getHeaderField("Retry-After"));
 				return false;
 			}
 			
@@ -133,6 +145,17 @@ public class SimpleConnector extends Connector {
 		}
 		
 		return false;
+	}
+	
+	protected void setTemporaryTimeout(String strTimeoutSeconds) {
+		lastThrottled = System.currentTimeMillis();
+		
+		try {
+			throttleTimeout = Integer.parseInt(strTimeoutSeconds);
+		} catch (NumberFormatException e) {
+			LOG.warn("Unable to parse retry-after header value ({}) from throttled Coalmine response", strTimeoutSeconds);
+			throttleTimeout = DEFAULT_THROTTLE_TIMEOUT;
+		}
 	}
 	
 	private void logThrottled() {
