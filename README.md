@@ -20,14 +20,14 @@ Setup
         <version>0.1.0</version>
     </dependency>
 
-### Everyone else
+### Everyone Else
 
 Download the jar from the build directory of this repo and add to your project's classpath.
 
 Configuration
 -------------
 
-### Standard Java project
+### Standard Java Project
 
 The following code is typically placed in your main method before other application initialization. This ensures that even application configuration errors are caught by Coalmine.
 
@@ -36,7 +36,7 @@ The following code is typically placed in your main method before other applicat
     connector.setVersion("1.0.0");
     Thread.setDefaultUncaughtExceptionHandler(new CoalmineUncaughtExceptionHandler(connector));
 
-### Java web application
+### Java Web Application
 
 For web applications, you can simply add a filter to your web.xml. We recommend making this filter first so that all possible errors are caught by Coalmine.
 
