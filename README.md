@@ -1,8 +1,10 @@
-# Java Connector for Coalmine
+Java Connector for Coalmine
+===========================
 
 This connector allows you to easily send messages to the Coalmine API.
 
-## Setup
+Setup
+-----
 
 ### Maven
 
@@ -17,7 +19,8 @@ This connector allows you to easily send messages to the Coalmine API.
 
 Download the jar from the build directory of this repo and add to your project's classpath.
 
-## Configuration
+Configuration
+-------------
 
 ### Standard Java project
 
@@ -79,7 +82,8 @@ Coalmine comes ready to use on GAE for Java. Simply add the below to your web.xm
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-## Configuration for Loggers
+Configuration for Loggers
+-------------------------
 
 Coalmine can be configured to listen to your existing logging framework and automatically send notifications based on log messages.
 
