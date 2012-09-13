@@ -3,6 +3,11 @@ Java Connector for Coalmine
 
 This connector allows you to easily send messages to the Coalmine API.
 
+Source
+------
+
+You can always find the latest source code on [GitHub](https://github.com/coalmine/coalmine_java).
+
 Setup
 -----
 
