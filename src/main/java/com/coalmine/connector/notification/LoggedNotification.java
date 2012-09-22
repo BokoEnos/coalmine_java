@@ -236,7 +236,9 @@ public class LoggedNotification extends Notification {
 			HttpServletRequest http = (HttpServletRequest) request;
 			referrer  = http.getHeader("referer");
 			userAgent = http.getHeader("User-Agent");
-			url = http.getRequestURI();
+			if (http.getRequestURL() != null) {
+				url = http.getRequestURL().toString();
+			}
 			environment.put("Query String", http.getQueryString());
 			environment.put("HTTP Method", http.getMethod());
 			environment.put("Auth Type", http.getAuthType());
