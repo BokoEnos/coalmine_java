@@ -3,6 +3,8 @@ Java Connector for Coalmine
 
 This connector allows you to easily send messages to the Coalmine API.
 
+[Coalmine](https://www.getcoalmine.com) is a cloud-based exception and error tracking service for your web apps.
+
 Source
 ------
 
@@ -22,7 +24,7 @@ Setup
 
 ### Everyone Else
 
-Download the jar from the build directory of this repo and add to your project's classpath.
+Download the JAR from the build directory of this repository and add it to your project's classpath.
 
 Configuration
 -------------

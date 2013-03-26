@@ -8,7 +8,7 @@
 
 	<name>Coalmine Java Connector</name>
 	<url>https://getcoalmine.com</url>
-	<description>Coalmine connector for Java. Sends your java errors and log messages to the Coalmine service.</description>
+	<description>Coalmine connector for Java. Coalmine (https://www.getcoalmine.com) is a cloud-based exception and error tracking service for your web apps.</description>
 
 	<scm>
 		<url>https://github.com/coalmine/coalmine_java</url>
