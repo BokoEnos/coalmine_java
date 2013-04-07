@@ -2,6 +2,8 @@ package com.coalmine.connector.notification;
 
 import java.util.Map;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Base Notification for sending information to Coalmine. Notifications come in
  * two major forms: LoggedNotification (application event notifications) and
@@ -14,6 +16,9 @@ public abstract class Notification {
 	
 	/** Application version. Optional. Example: 1.0.0 */
 	protected String version;
+	
+	@SerializedName("user_id")
+	protected String userId;
 	
 	/**
 	 * Get the fields to send to Coalmine.
@@ -38,5 +43,9 @@ public abstract class Notification {
 	 */
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }

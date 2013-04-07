@@ -6,6 +6,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 
 import com.coalmine.connector.logging.GaeCoalmineHandler;
+import com.coalmine.connector.logging.GwtGaeCoalmineHandler;
 
 /**
  * A CoalmineFilter which automatically collects the environment and version from
@@ -43,7 +44,13 @@ public class GaeCoalmineFilter extends CoalmineFilter {
 		
 		// GAE uses JUL so we provide an easy way to hook into those log messages
 		// By default we always do this, but allow the client to disable with a config param
-		if (!"false".equals(config.getInitParameter("jul-handler"))) {
+		String julHandler = config.getInitParameter("jul-handler");
+		julHandler = julHandler == null ? "" : julHandler.toLowerCase();
+		
+		if ("gwt".equals(julHandler)) {
+			_log = Logger.getLogger("");
+			_log.addHandler(new GwtGaeCoalmineHandler(connector));
+		} else if (!"false".equals(julHandler)) {
 			_log = Logger.getLogger("");
 			_log.addHandler(new GaeCoalmineHandler(connector));
 		}

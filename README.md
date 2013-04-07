@@ -79,13 +79,15 @@ Coalmine comes ready to use on GAE for Java. Simply add the below to your web.xm
       <!-- Optional: Whether to auto add a JUL Handler to listen for log messages. Defaults to true -->
       <init-param>
         <param-name>jul-handler</param-name>
-        <param-value>true</param-value>
+        <param-value>true|gwt|false</param-value>
       </init-param>
     </filter>
     <filter-mapping>
         <filter-name>coalmine</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+The GWT jul-handler is a special GAE handler for normalizing Google Web Toolkit stack traces.
 
 Configuration for Loggers
 -------------------------

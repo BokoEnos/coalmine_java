@@ -78,7 +78,7 @@ public class CoalmineHandler extends Handler {
 		
 		// TODO: Queue this up for later sending instead.
 		
-		LoggedNotification notification = new LoggedNotification(record.getThrown());
+		LoggedNotification notification = buildLoggedNotification(record.getThrown());
 		notification.setSeverity(getSeverity(record.getLevel()));
 		notification.setMessage(record.getMessage());
 		notification.setMethodName(record.getSourceMethodName());
@@ -90,6 +90,10 @@ public class CoalmineHandler extends Handler {
 	@Override
 	public void close() throws SecurityException {
 		// Do nothing
+	}
+	
+	protected LoggedNotification buildLoggedNotification(Throwable ex) {
+		return new LoggedNotification(ex);
 	}
 	
 	protected Severity getSeverity(Level level) {

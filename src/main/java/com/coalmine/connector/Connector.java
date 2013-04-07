@@ -26,6 +26,8 @@ public abstract class Connector {
 	
 	protected Set<String> enabledEnvironments;
 	
+	protected UserProvider userProvider;
+	
 	public Connector(String signature) {
 		this.signature = signature;
 		setUrl(DEFAULT_API_URL);
@@ -44,6 +46,14 @@ public abstract class Connector {
 		}
 		
 		enabledEnvironments.add(env.toLowerCase());
+	}
+	
+	public void setUserProvider(UserProvider userProvider) {
+		this.userProvider = userProvider;
+	}
+	
+	public UserProvider getUserProvider() {
+		return userProvider;
 	}
 	
 	public void setUrl(String url) {

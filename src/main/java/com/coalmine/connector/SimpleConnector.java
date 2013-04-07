@@ -76,7 +76,7 @@ public class SimpleConnector extends Connector {
 		}
 		
 		long diff = System.currentTimeMillis() - lastThrottled;
-		if (diff > throttleTimeout) {
+		if (diff > throttleTimeout * 1000) {
 			lastThrottled = null;
 			return false;
 		}
@@ -93,6 +93,9 @@ public class SimpleConnector extends Connector {
 		
 		notification.setApplicationEnvironment(applicationEnvironment);
 		notification.setVersion(version);
+		if (getUserProvider() != null) {
+			notification.setUserId(getUserProvider().getUser());
+		}
 		
 		URL url = null;
 		HttpURLConnection conn = null;
