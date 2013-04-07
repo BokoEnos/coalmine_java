@@ -90,29 +90,7 @@ public class LoggedNotification extends Notification {
 		severity = Severity.ERROR;
 		
 		if (ex != null) {
-			
-			// Unwrap the exception and find the root cause.
-			while (ex.getCause() != null) {
-				ex = ex.getCause();
-			}
-			
-			message  = String.format("[%s] %s", ex.getClass().getSimpleName(), ex.getLocalizedMessage());
-					
-			StackTraceElement[] lines = ex.getStackTrace();
-			if (lines.length > 0) {
-				className  = lines[0].getClassName();
-				file       = lines[0].getFileName();
-				lineNumber = lines[0].getLineNumber();
-				method     = lines[0].getMethodName();
-			}
-			
-			StringBuilder sb = new StringBuilder();
-			for (StackTraceElement el : lines) {
-				sb.append(el.toString());
-				sb.append("\n");
-			}
-			
-			stackTrace = sb.toString();
+			setException(ex);
 		}
 	}
 	
@@ -202,11 +180,15 @@ public class LoggedNotification extends Notification {
 	public void setRequest(ServletRequest request) {
 		
 		StringBuilder sb = new StringBuilder();
-		Map<String, Object> params = request.getParameterMap();
-		for (String key : params.keySet()) {
-			sb.append(key);
-			sb.append("=");
-			sb.append(params.get(key));
+		Enumeration<String> names = request.getParameterNames();
+		while (names.hasMoreElements()) {
+			String name = names.nextElement();
+			for (String value : request.getParameterValues(name)) {
+				sb.append(name);
+				sb.append("=");
+				sb.append(value);
+				sb.append("&");
+			}
 		}
 		
 		parameters = sb.toString();
@@ -234,7 +216,7 @@ public class LoggedNotification extends Notification {
 		
 		if (request instanceof HttpServletRequest) {
 			HttpServletRequest http = (HttpServletRequest) request;
-			referrer  = http.getHeader("referer");
+			referrer  = http.getHeader("Referer");
 			userAgent = http.getHeader("User-Agent");
 			if (http.getRequestURL() != null) {
 				url = http.getRequestURL().toString();
@@ -262,5 +244,34 @@ public class LoggedNotification extends Notification {
 
 	public void setThreadId(long threadId) {
 		this.threadId = threadId;
+	}
+	
+	protected void setException(Throwable ex) {
+		// Unwrap the exception and find the root cause.
+		while (ex.getCause() != null) {
+			ex = ex.getCause();
+		}
+		
+		message  = String.format("[%s] %s", ex.getClass().getSimpleName(), ex.getLocalizedMessage());
+				
+		StackTraceElement[] lines = extractStackTraceElements(ex);
+		if (lines.length > 0) {
+			className  = lines[0].getClassName();
+			file       = lines[0].getFileName();
+			lineNumber = lines[0].getLineNumber();
+			method     = lines[0].getMethodName();
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		for (StackTraceElement el : lines) {
+			sb.append(el.toString());
+			sb.append("\n");
+		}
+		
+		stackTrace = sb.toString();
+	}
+	
+	protected StackTraceElement[] extractStackTraceElements(Throwable ex) {
+		return ex.getStackTrace();
 	}
 }
