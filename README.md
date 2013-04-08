@@ -109,7 +109,7 @@ Please fork this repo and make your changes in a feature branch. Issue a pull re
 
 All changes should include relevant unit tests.
 
-## Releasing a new version to maven central (internal use)
+### Releasing a new version to maven central (internal use)
 
     mvn release:clean
     mvn release:prepare
