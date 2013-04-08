@@ -101,3 +101,16 @@ Coalmine can be configured to listen to your existing logging framework and auto
 In `logging.properties` add the Coalmine Handler. This line is comma separated, so you may add additional loggers such as `java.util.logging.ConsoleHandler`
 
     handlers = com.coalmine.connector.logging.CoalmineHandler
+
+Contributing
+------------
+
+Please fork this repo and make your changes in a feature branch. Issue a pull request with a ticket when your change is complete.
+
+All changes should include relevant unit tests.
+
+## Releasing a new version to maven central (internal use)
+
+    mvn release:clean
+    mvn release:prepare
+    mvn release:perform -Darguments=-Dgpg.passphrase=XXXX
