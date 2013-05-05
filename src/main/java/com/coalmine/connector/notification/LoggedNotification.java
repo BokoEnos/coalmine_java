@@ -247,10 +247,7 @@ public class LoggedNotification extends Notification {
 	}
 	
 	protected void setException(Throwable ex) {
-		// Unwrap the exception and find the root cause.
-		while (ex.getCause() != null) {
-			ex = ex.getCause();
-		}
+		ex = getExceptionCause(ex);
 		
 		message  = String.format("[%s] %s", ex.getClass().getSimpleName(), ex.getLocalizedMessage());
 				
@@ -270,6 +267,15 @@ public class LoggedNotification extends Notification {
 		
 		stackTrace = sb.toString();
 	}
+
+  protected Throwable getExceptionCause(Throwable ex) {
+    // Unwrap the exception and find the root cause.
+		while (ex.getCause() != null) {
+			ex = ex.getCause();
+		}
+		
+		return ex;
+  }
 	
 	protected StackTraceElement[] extractStackTraceElements(Throwable ex) {
 		return ex.getStackTrace();
