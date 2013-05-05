@@ -109,8 +109,13 @@ Please fork this repo and make your changes in a feature branch. Issue a pull re
 
 All changes should include relevant unit tests.
 
-### Releasing a new version to maven central (internal use)
+Releasing
+---------
+
+*Internal use only.*
+
+To push a new version to the Maven Central Repository, run the following commands:
 
     mvn release:clean
     mvn release:prepare
-    mvn release:perform -Darguments=-Dgpg.passphrase=XXXX
+    mvn release:perform -Darguments=-Dgpg.passphrase=$MAVEN_GPG_PASSPHRASE
