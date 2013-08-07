@@ -12,6 +12,12 @@ public abstract class Connector {
 
 	static final String DEFAULT_API_URL = "https://coalmineapp.com/notify";
 	
+	@SuppressWarnings("serial")
+	static final Set<String> DEFAULT_ENABLED_ENVIRONMENTS = new HashSet<String>(){{
+		add("production");
+		add("staging");		
+	}};
+	
 	static final int DEFAULT_TIMEOUT = 5000;
 	
 	protected String url;
@@ -28,15 +34,20 @@ public abstract class Connector {
 	
 	protected UserProvider userProvider;
 	
-	public Connector(String signature) {
+	public Connector(String signature) {		
+		this(signature, DEFAULT_ENABLED_ENVIRONMENTS);
+	}
+	
+	public Connector(String signature, Set<String> enabledEnvironments) {
 		this.signature = signature;
+		this.enabledEnvironments = enabledEnvironments;
+		
 		setUrl(DEFAULT_API_URL);
 		setTimeout(DEFAULT_TIMEOUT);
-		
-		enabledEnvironments = new HashSet<String>();
-		enabledEnvironments.add("production");
-		enabledEnvironments.add("staging");
 	}
+	
+	public abstract void start();
+	public abstract void stop();
 	
 	public abstract boolean send(Notification notification);
 	

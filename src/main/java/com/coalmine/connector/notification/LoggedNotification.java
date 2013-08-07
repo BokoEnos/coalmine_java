@@ -183,6 +183,14 @@ public class LoggedNotification extends Notification {
 	}
 
 	/**
+	 * @param environment
+	 * 				The environment of the notification
+	 */
+	public void setEnvironment(Map<String, String> environment) {
+		this.environment = environment;
+	}
+	
+	/**
 	 * Set the HTTP request object. This is only used by web apps.
 	 * 
 	 * @param request
@@ -258,14 +266,29 @@ public class LoggedNotification extends Notification {
 	public void setThreadId(long threadId) {
 		this.threadId = threadId;
 	}
+	
+	public void setStackTrace(String stackTrace) {
+		this.stackTrace = stackTrace;
+	}
+	public void setLineNumber(int lineNumber) {
+		this.lineNumber = lineNumber;
+	}
+	public void setMethod(String method) {
+		this.method = method;
+	}
+	public void setFile(String file) {
+		this.file = file;
+	}
 
 	protected void setException(Throwable ex) {
 		ex = getExceptionCause(ex);
 
-		message = String.format("[%s] %s", ex.getClass().getSimpleName(),
-				ex.getLocalizedMessage());
+		message = String.format("[%s] %s", ex.getClass().getSimpleName(), ex.getLocalizedMessage());
 
-		StackTraceElement[] lines = extractStackTraceElements(ex);
+		setException(extractStackTraceElements(ex));
+	}
+	
+	protected void setException(StackTraceElement[] lines) {
 		if (lines.length > 0) {
 			className = lines[0].getClassName();
 			file = lines[0].getFileName();

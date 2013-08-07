@@ -53,6 +53,16 @@ public class SimpleConnector extends Connector {
 	}
 	
 	@Override
+	public void start() {
+		
+	}
+	
+	@Override
+	public void stop() {
+		
+	}
+	
+	@Override
 	public boolean send(Notification notification) {
 		
 		if (!isSendable(notification)) {
